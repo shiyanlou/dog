@@ -1,31 +1,11 @@
-{% extends 'bootstrap/base.html' %}
+{% extends 'base.html' %}
 
-{% block title %}user{% endblock %}
+{% block title %}User{% endblock %}
 
-{% block navbar %}
-  <div class='navbar navbar-inverse' role='navigation'>
-    <div class='container'>
-      <div class='navbar-header'>
-        <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'>
-          <span class='sr-only'>Toggle navigation</span>
-          <span class='icon-bar'></span>
-          <span class='icon-bar'></span>
-          <span class='icon-bar'></span>
-        </button>
-        <a class='navbar-brand' href='/'>Hello</a>
-      </div>
-      <div class='navbar-collapse collapse'>
-        <ul class='nav navbar-nav'>
-          <li><a href='/'>Home</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-{% endblock %}
-
-{% block content %}
-  <div class='container'>
+{% block page_content %}
     <h1>Hello, {{ username }}</h1>
     <h3>User-Agent: {{ ua }}</h3>
-  </div>
+    <h3>更新时间：{{ current_time }}</h3>
+    <h3>更新时间：{{ moment(current_time).format('LLL') }}</h3>
+    <h3>更新时间：{{ moment(current_time).fromNow(refresh=True) }}</h3>
 {% endblock %}
