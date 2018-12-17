@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, render_template, session, redirect, url_for, flash
 from flask_moment import Moment
 from flask_bootstrap import Bootstrap
@@ -5,11 +6,31 @@ from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
+from flask_sqlalchemy import SQLAlchemy
 
+basedir = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'HELLO'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+db = SQLAlchemy(app)
+
+class Role(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    users = db.relationship('User', backref='role', lazy='dynamic')
+    def __repr__(self):
+        return '<Role: {}>'.format(self.name)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
+    def __repr__(self):
+        return '<User: {}>'.format(self.name)
 
 class NameForm(FlaskForm):
     name = StringField('What\'s your name?', validators=[DataRequired()])
