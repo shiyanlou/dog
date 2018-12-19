@@ -1,4 +1,5 @@
 import os
+from threading import Thread
 from flask import Flask, request, render_template, session, redirect, url_for, flash
 from flask_moment import Moment
 from flask_bootstrap import Bootstrap
@@ -8,9 +9,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-# 这两行给应用注册 Mail 
-from flask_mail import Mail
-mail = Mail(app)
+from flask_mail import Mail, Message
 
 basedir = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
@@ -22,7 +21,8 @@ app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 # USERNAME 是发信人的邮箱，PASSWORD 是从邮箱那里获得的授权码
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')   # mhdccxqgqwcmhhfc
+app.config['ADMIN'] = 'flask 应用测试'
 # 有了以上设置，可以在 flask shell 里执行下面的代码
 # 结果就是 QQ 邮箱会给 163 邮箱发送一封邮件
 '''
@@ -37,6 +37,22 @@ msg.html = '<b>HTML</b> body'           # 这个也是，不知道哪个是，�
 with app.app_context():                 # 这行可以不写，毕竟用了 flask shell
     mail.send(msg)
 '''
+
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+
+def send_email(name, **kw):
+    msg = Message(
+        app.config.get('ADMIN'),
+        sender=app.config.get('MAIL_USERNAME'),
+        recipients=['yujiechi1a@163.com']
+    )
+    msg.html = '<h1>Hello, {} 加入</h1>'.format(name)
+    thr = Thread(target=send_async_email, args=(app, msg))
+    thr.start()
+    return thr
+
 app.config['SECRET_KEY'] = 'HELLO'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
@@ -45,6 +61,7 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+mail = Mail(app)
 
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -73,6 +90,7 @@ def index():
             user = User(name=form.name.data)
             db.session.add(user)
             session['known'] = False
+            send_email(form.name.data)
         else:
             session['known'] = True
         session['name'] = form.name.data
