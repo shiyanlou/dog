@@ -1,1 +1,1 @@
-from .front import front
+from .front import front, mail

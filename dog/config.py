@@ -10,7 +10,7 @@ class BaseConfig:
     def init_app(app):
         pass
 
-class DevConfig(BaseConfig)
+class DevConfig(BaseConfig):
     # SERVER 和 PORT 是需要网上查的，各家的邮箱都不同
     MAIL_SERVER = 'smtp.qq.com'
     MAIL_PORT = 25
@@ -26,7 +26,7 @@ class DevConfig(BaseConfig)
 class TestConfig(BaseConfig):
     pass
 
-config = {
+configs = {
     'dev': DevConfig,
     'test': TestConfig
 }
