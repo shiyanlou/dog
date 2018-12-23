@@ -30,3 +30,5 @@ configs = {
     'dev': DevConfig,
     'test': TestConfig
 }
+
+print(DevConfig.SQLALCHEMY_DATABASE_URI)

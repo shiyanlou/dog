@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}User{% endblock %}
+
+{% block page_content %}
+    <h1>Hello, {{ current_user.name }}</h1>
+    <h3>User-Agent: {{ ua }}</h3>
+    <h3>创建时间：{{ moment(current_user.created_at).format('LLL') }}</h3>
+    <h3>更新时间（格林尼治时间）：{{ current_user.created_at }}</h3>
+    <h3>更新时间：{{ moment(current_user.updated_at).fromNow(refresh=True) }}</h3>
+{% endblock %}

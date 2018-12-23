@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/wtf.html' import quick_form %}
+
+{% block title %}Register{% endblock %}
+
+{% block page_content %}
+  <h1>注册</h1>
+  {{ quick_form(form) }}
+{% endblock %}

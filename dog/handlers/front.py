@@ -1,8 +1,8 @@
-from datetime import datetime
 from threading import Thread
 from flask import Blueprint, session, redirect, url_for, render_template, flash, current_app
 from flask_mail import Mail, Message
-from ..forms import NameForm
+from flask_login import login_required, login_user, logout_user
+from ..forms import RegisterForm, LoginForm
 from ..models import db, User
 
 front = Blueprint('front', __name__)
@@ -26,34 +26,37 @@ def send_email(name, **kw):
     return thr
     '''
 
-@front.route('/', methods=['get', 'post'])
+@front.route('/')
 def index():
-    form = NameForm()
+    return render_template('index.html')
+
+@front.route('/register', methods=['get', 'post'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        form.create_user()
+        session['name'] = form.name.data
+        send_email(form.name.data)
+        flash('{} 注册成功'.format(form.name.data), 'success')
+        return redirect(url_for('.login'))
+    return render_template('register.html', form=form)
+
+@front.route('/login', methods=['get', 'post'])
+def login():
+    form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(name=form.name.data).first()
-        if user is None:
-            user = User(name=form.name.data)
-            db.session.add(user)
-            db.session.commit()
-            session['known'] = False
-            send_email(form.name.data)
-        else:
-            session['known'] = True
-        session['name'] = form.name.data
-        flash('看起来你已经更名为：{}'.format(form.name.data), 'success')
-        return redirect(url_for('front.index'))
-    return render_template(
-        'index.html', 
-        form=form, 
-        name=session.get('name'), 
-        known=session.get('known')
-    )
+        login_user(user)
+        flash('您已成功登录', 'success')
+        return redirect(url_for('.index'))
+    return render_template('login.html', form=form, name=session.get('name'))
 
-@front.route('/user/<username>')
-def user(username):
-    ua = request.headers.get('User-Agent')
-    return render_template('user.html', username=username, ua=ua,
-        current_time=datetime.utcnow())
+@front.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('您已退出登录', 'info')
+    return redirect(url_for('.index'))
 
 @front.errorhandler(404)
 def page_not_found(e):
