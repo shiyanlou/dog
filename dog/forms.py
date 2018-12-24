@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 from .models import db, User
+from .email import send_email
 
 
 class RegisterForm(FlaskForm):
@@ -24,6 +25,8 @@ class RegisterForm(FlaskForm):
         self.populate_obj(user)
         db.session.add(user)
         db.session.commit()
+        token = user.generate_confirm_token()
+        send_email(user.name, token=token)
 
 
 class LoginForm(FlaskForm):

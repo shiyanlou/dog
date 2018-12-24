@@ -5,7 +5,8 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from .config import configs
 from .models import db, User
-from .handlers import front, mail, user
+from .handlers import front, user
+from .email import mail
 
 def register_blueprints(app):
     app.register_blueprint(front)

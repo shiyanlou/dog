@@ -1,2 +1,2 @@
-from .front import front, mail
+from .front import front
 from .user import user
