@@ -1,7 +1,14 @@
-Dear {{ name }},
+Dear {{ user.name }},
+
 Wecome to Dog!
+
 To confirm your account please click on the following link:
+
 {{ url_for('front.confirm', token=token, _external=True) }}
+
 Sincerely,
+
 The Dog Team
+
 Note: replies to this email address are 无效.
+

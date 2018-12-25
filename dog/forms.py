@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
+from wtforms import StringField, SubmitField, PasswordField, \
+    BooleanField, ValidationError
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 from .models import db, User
 from .email import send_email
@@ -9,7 +10,8 @@ class RegisterForm(FlaskForm):
     name = StringField('名字', validators=[DataRequired()])
     email = StringField('邮箱', validators=[DataRequired(), Email()])
     password = PasswordField('密码', validators=[DataRequired(), Length(3, 12)])
-    confirm_password = PasswordField('确认密码', validators=[DataRequired(), EqualTo('password')])
+    confirm_password = PasswordField('确认密码', validators=[DataRequired(), 
+        EqualTo('password')])
     submit = SubmitField('提交')
 
     def validate_name(self, field):
@@ -25,8 +27,9 @@ class RegisterForm(FlaskForm):
         self.populate_obj(user)
         db.session.add(user)
         db.session.commit()
+        # 获得加密签名
         token = user.generate_confirm_token()
-        send_email(user.name, token=token)
+        send_email(self.email, user=user, token=token)
 
 
 class LoginForm(FlaskForm):

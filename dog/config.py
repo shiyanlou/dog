@@ -5,6 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class BaseConfig:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hello world'
     SQLALCHEMY_COMMIT_ON_TEAMDOWN = True
+    MAIL_SUBJECT_PREFIX = 'EmailTest'
 
     @staticmethod
     def init_app(app):
@@ -30,5 +31,3 @@ configs = {
     'dev': DevConfig,
     'test': TestConfig
 }
-
-print(DevConfig.SQLALCHEMY_DATABASE_URI)

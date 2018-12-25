@@ -21,7 +21,16 @@ def register():
     return render_template('register.html', form=form)
 
 @front.route('/confirm/<token>')
-
+@login_required
+def confirm(token):
+    if current_user.confirmed:
+        return redirect('index')
+    if current_user.confirm(token):
+        db.session.commit()
+        flash('You have confirmed your account. Thanks!')
+    else:
+        flash('The confirmation link is invalid or has expired.')
+    return redirect('index')
 
 @front.route('/login', methods=['get', 'post'])
 def login():

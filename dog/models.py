@@ -39,12 +39,17 @@ class User(db.Model, UserMixin):
         return check_password_hash(self._password, p)
 
     def generate_confirm_token(self, expiration=3600):
+        # 创建一个令牌生成器，它可以用来生成令牌（就是一串复杂的字符串）
+        # expiration 参数设置令牌的有效时间
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
+        # 令牌生成器的 dumps 方法的参数是字典，返回值就是令牌（也叫加密签名）
         return s.dumps({'confirm': self.id})
 
     def confirm(self, token):
+        # 创建一个令牌生成器
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
+            # 令牌生成器的 loads 方法的参数是令牌，返回值为字典
             data = s.loads(token)
         except:
             return False
