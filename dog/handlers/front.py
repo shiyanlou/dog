@@ -1,6 +1,6 @@
 from flask import Blueprint, session, redirect, url_for, render_template, \
     flash, current_app
-from flask_login import login_required, login_user, logout_user
+from flask_login import login_required, login_user, logout_user, current_user
 from ..forms import RegisterForm, LoginForm
 from ..models import db, User
 
@@ -24,13 +24,13 @@ def register():
 @login_required
 def confirm(token):
     if current_user.confirmed:
-        return redirect('index')
+        return redirect(url_for('.index'))
     if current_user.confirm(token):
         db.session.commit()
         flash('You have confirmed your account. Thanks!')
     else:
         flash('The confirmation link is invalid or has expired.')
-    return redirect('index')
+    return redirect(url_for('.index'))
 
 @front.route('/login', methods=['get', 'post'])
 def login():

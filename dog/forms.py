@@ -29,7 +29,7 @@ class RegisterForm(FlaskForm):
         db.session.commit()
         # 获得加密签名
         token = user.generate_confirm_token()
-        send_email(self.email, user=user, token=token)
+        send_email(self.email.data, user=user, token=token)
 
 
 class LoginForm(FlaskForm):

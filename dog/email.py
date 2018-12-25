@@ -15,25 +15,24 @@ def send_email(to, **kw):
     # current_app 的上下文环境只支持传递给当前应用的主线程
     # 而 _get_current_object 方法可以返回一个应用对象
     # 该对象具有与 current_app 一样的上下文环境
-    #app = current_app._get_current_object()
+    app = current_app._get_current_object()
     # Message 是个类，它接收以下参数：
     # 1、默认参数 subject 字符串（邮件主题
     # 2、sender 字符串（发件人的邮箱
     # 3、recipients 列表（收件人邮箱列表
     #print(app.config.get('MAIL_SUBJECT_PREFIX') + ' To ' + kw['user'].name)
     msg = Message(
-        current_app.config.get('MAIL_SUBJECT_PREFIX'),
-        sender=current_app.config.get('MAIL_USERNAME'),
+        app.config.get('MAIL_SUBJECT_PREFIX') + ' To ' + kw['user'].name,
+        sender=app.config.get('MAIL_USERNAME'),
         recipients=[to]
     )
 
-    #msg.body = render_template('email/confirm.txt', **kw)
-    #msg.html = render_template('email/confirm.html', **kw)
-    msg.body = '<p>To confirm your account please click here<p>'
+    msg.body = render_template('email/confirm.txt', **kw)
+    msg.html = render_template('email/confirm.html', **kw)
+    '''
     mail.send(msg)
     '''
     # 创建一个子线程并启动
     thr = Thread(target=send_async_email, args=(app, msg))
     thr.start()
     return thr
-    '''
