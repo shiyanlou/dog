@@ -5,7 +5,7 @@ class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class DevelopConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'mysql://root@localhost?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = 'mysql://root@localhost/dog?charset=utf8'
     
 class TestConfig(BaseConfig):
     pass

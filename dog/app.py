@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
+from .models import db, User
 from .config import configs
 
 def register_blueprints(app):
@@ -13,6 +14,7 @@ def create_app(config):
     app.config.from_object(configs.get(config))
     bootstrap = Bootstrap(app)
     moment = Moment(app)
+    db.init_app(app)
     register_blueprints(app)
 
     @app.errorhandler(404)
