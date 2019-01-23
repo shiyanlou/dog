@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block title %}主页{% endblock %}
 
 {% block page_content %}
-  <h1>Hello World</h1>
-  <h3>你的浏览器：{{ ua }}</h3>
-  <h3>{{ moment(current_time).format('LLL') }}</h3>
-  <h3>{{ moment(current_time).fromNow(refresh=True) }}</h3>
+  <h3>Hello, {% if name %}{{ name }}{% else %}Stranger{% endif %}</h3>
+  <br>{{ wtf.quick_form(form) }}<br>
 {% endblock %}
