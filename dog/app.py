@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
+from flask_migrate import Migrate
 from .models import db, User
 from .config import configs
 
@@ -15,6 +16,7 @@ def create_app(config):
     bootstrap = Bootstrap(app)
     moment = Moment(app)
     db.init_app(app)
+    migrate = Migrate(app, db)
     register_blueprints(app)
 
     @app.errorhandler(404)
